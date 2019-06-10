@@ -13,10 +13,10 @@
  * Version: 0.6.10
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
-
 define('LDC_Functions', true);
 define('LDC_Functions_Version', '0.6.10');
+
+defined('ABSPATH') or die('No script kiddies please!');
 
 function ldc_guid_to_postid($guid = ''){
   if($guid){
