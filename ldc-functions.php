@@ -81,7 +81,10 @@ function ldc_url_to_postid($url = ''){
 
 function ldc_http_referer_to_postid(){
   $referer = wp_get_referer();
-  return url_to_postid($referer);
+  if($referer){
+    return url_to_postid($referer);
+  }
+  return 0;
 }
 
 function ldc_restrict_frontend_to_logged_in_users_func(){
