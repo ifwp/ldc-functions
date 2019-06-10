@@ -104,8 +104,8 @@ function ldc_restrict_frontend_to_logged_in_users(){
 
 function ldc_restrict_rest_api_to_logged_in_users_func($result){
   if(!empty($result)){
- 	  return $result;
- 	}
+   return $result;
+  }
   $restrict = false;
   if(!is_user_logged_in()){
     $restrict = true;
@@ -161,10 +161,10 @@ function ldc_fix_rwmb_validate_func(RW_Meta_Box $object){
     return;
   }
   $file = plugin_dir_path(__FILE__) . 'js/rwmb-validate.js';
-	$url = plugin_dir_url(__FILE__) . 'js/rwmb-validate.js';
+  $url = plugin_dir_url(__FILE__) . 'js/rwmb-validate.js';
   if(file_exists($file)){
     wp_dequeue_script('rwmb-validate');
-		wp_deregister_script('rwmb-validate');
+    wp_deregister_script('rwmb-validate');
     wp_enqueue_script('rwmb-validate', $url, array('jquery-validation', 'jquery-validation-additional-methods'), '4.18.2', true);
     if(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
       RWMB_Helpers_Field::localize_script_once('rwmb-validate', 'rwmbValidate', array(
