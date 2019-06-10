@@ -473,3 +473,15 @@ function ldc_remove_private_title_format_func($private_title_format){
 function ldc_remove_private_title_format(){
   add_filter('private_title_format', 'ldc_remove_private_title_format_func');
 }
+
+function ldc_only_show_current_user_attachments_func($query = array()){
+  $user_id = get_current_user_id();
+  if($user_id){
+    $query['author'] = $user_id;
+  }
+  return $query;
+}
+
+function ldc_only_show_current_user_attachments(){
+  add_filter('ajax_query_attachments_args', 'ldc_only_show_current_user_attachments_func');
+}
