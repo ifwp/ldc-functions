@@ -1,3 +1,4 @@
+<?php
 /**
  * Programmatically logs a user in
  * 
