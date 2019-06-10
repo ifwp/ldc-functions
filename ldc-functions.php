@@ -15,10 +15,12 @@ function ldc_guid_to_postid($guid = ''){
 
 function ldc_attachment_url_to_postid($url = ''){
   if($url){
-    $post_id = ldc_guid_to_postid($url); // full size
+    /** full size */
+    $post_id = ldc_guid_to_postid($url);
     if($post_id){
       return $post_id;
     }
+    /** resized */
     preg_match('/^(.+)(-\d+x\d+)(\.' . substr($url, strrpos($url, '.') + 1) . ')?$/', $url, $matches);
     if($matches){
       $url = $matches[1];
@@ -26,10 +28,11 @@ function ldc_attachment_url_to_postid($url = ''){
         $url .= $matches[3];
       }
     }
-    $post_id = ldc_guid_to_postid($url); // resized
+    $post_id = ldc_guid_to_postid($url);
     if($post_id){
       return $post_id;
     }
+    /** edited */
     preg_match('/^(.+)(-e\d+)(\.' . substr($url, strrpos($url, '.') + 1) . ')?$/', $url, $matches);
     if($matches){
       $url = $matches[1];
@@ -37,7 +40,7 @@ function ldc_attachment_url_to_postid($url = ''){
         $url .= $matches[3];
       }
     }
-    $post_id = ldc_guid_to_postid($url); // edited
+    $post_id = ldc_guid_to_postid($url);
     if($post_id){
       return $post_id;
     }
