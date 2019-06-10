@@ -249,7 +249,7 @@ function ldc_allow_programmatic_login($user, $username, $password){
   return get_user_by('login', $username);
 }
 
-function ldc_retrieve_remote_response($response = null){
+function ldc_parse_remote_response($response = null){
   if($response){
     if(is_wp_error($response)){
       return array(
@@ -279,4 +279,56 @@ function ldc_retrieve_remote_response($response = null){
     'success' => false,
     'data' => 'Unknown error occurred',
   );
+}
+
+function ldc_parse_requests_response($response = null){
+  if($response){
+    if(is_a($response, 'Requests_Exception')){
+      return array(
+	'success' => false,
+	'data' => $response->getMessage(),
+      );
+    }
+    if(is_a($response, 'Requests_Response')){
+      try {
+	$response->throw_for_status();
+      } catch(Exception $exception){
+	return array(
+          'success' => false,
+          'data' => $exception->getMessage(),
+	);
+      }
+      $response_code = $response->status_code;
+	if($response_code == 200){
+	  return array(
+            'success' => true,
+            'data' => $response->body,
+	  );
+      }
+      $response_message = get_status_header_desc($response_code);
+	if($response_message){
+	  return array(
+	    'success' => false,
+	    'data' => $response_message,
+	  );
+      }
+    }
+  }
+  return array(
+    'success' => false,
+    'data' => 'Unknown error occurred',
+  );
+}
+
+function ldc_json_decode_parsed_response($response = array(), $assoc = false, $depth = 512, $options = 0){
+  if(is_array($response) and $response and isset($response['status']) and $response['status'] and isset($response['data']) and $response['data']){
+    $data = json_decode($response['data'], $assoc, $depth, $options);
+    if($data){
+      $response['data'] = $data;
+    } else {
+      $response['success'] = false;
+      $response['data'] = 'JSON cannot be decoded or the encoded data is deeper than the recursion limit';
+    }
+  }
+  return $response;
 }
