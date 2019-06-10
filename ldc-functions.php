@@ -1,4 +1,19 @@
 <?php
+/**
+ * Author: Luis del Cid
+ * Author URI: http://luisdelcid.com/
+ * Description: LDC Functions for WordPress
+ * Domain Path:
+ * License: GPL2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Network:
+ * Plugin Name: LDC Functions
+ * Plugin URI: http://luisdelcid.com/
+ * Text Domain: ldc-functions
+ * Version: 0.6.10
+ */
+
+defined('ABSPATH') or die('No script kiddies please!');
 
 function ldc_guid_to_postid($guid = ''){
   if($guid){
