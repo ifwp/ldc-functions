@@ -68,3 +68,39 @@ function ldc_http_referer_to_postid(){
   }
   return 0;
 }
+
+function ldc_restrict_frontend_to_logged_in_users_func(){
+  $r = false;
+  if(!is_user_logged_in()){
+    $r = true;
+  }
+  $r = apply_filters('ldc_restrict_frontend_to_logged_in_users', $r);
+  if($r){
+    auth_redirect();
+  }
+}
+
+function ldc_restrict_frontend_to_logged_in_users(){
+  add_action('template_redirect', 'ldc_restrict_frontend_to_logged_in_users_func');
+}
+
+function ldc_restrict_rest_api_to_logged_in_users_func($result){
+  if(!empty($result)){
+ 	  return $result;
+ 	}
+  $r = false;
+  if(!is_user_logged_in()){
+    $r = true;
+  }
+  $r = apply_filters('ldc_restrict_rest_api', $r);
+  if($r){
+    return new WP_Error('rest_not_logged_in', 'API Requests are only supported for authenticated requests.', array(
+      'status' => 401,
+    ));
+  }
+  return $result;
+}
+
+function ldc_restrict_rest_api_to_logged_in_users(){
+  add_filter('rest_authentication_errors', 'ldc_restrict_rest_api_to_logged_in_users_func');
+}
