@@ -15,6 +15,8 @@
 
 defined('ABSPATH') or die('No script kiddies please!');
 
+define('LDC_Functions', true);
+
 function ldc_guid_to_postid($guid = ''){
   if($guid){
     global $wpdb;
