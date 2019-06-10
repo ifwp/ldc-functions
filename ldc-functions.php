@@ -222,3 +222,11 @@ function ldc_wp_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   /** fix */
   return add_query_arg($name, wp_create_nonce($action), $actionurl);
 }
+
+function ldc_allow_programmatic_login(){
+  /** enable the awesome programmatic_login function by @iandunn https://gist.github.com/iandunn */
+  $file = plugin_dir_path(__FILE__) . 'programmatic_login.php';
+  if(file_exists($file)){
+    require_once($file);
+  }
+}
