@@ -414,6 +414,22 @@ function ldc_dropdowns_toggled_by_hovering_func(){
     });<?php
     $data = ob_get_clean();
     wp_add_inline_script('jquery-hoverIntent', $data);
+    ob_start(); ?>
+    .dropdown-toggle,
+    .dropdown-menu {
+      /** .rounded-0 */
+      border-radius: 0 !important;
+    }
+    .dropdown-menu {
+      /** .border-0 */
+      border: 0 !important;
+      /** .m-0 */
+      margin: 0 !important;
+      /** .shadow */
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }<?php
+    $data = ob_get_clean();
+    wp_add_inline_style('bootstrap', $data);
   }
 }
 
