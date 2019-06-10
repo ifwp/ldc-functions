@@ -417,23 +417,23 @@ function ldc_enqueue_bootstrap_4_func(){
   wp_enqueue_style('bootstrap-4', $url, array(), '4.3.1');
 }
 
-function ldc_enqueue_bootstrap_4($bundle = true){
-  if($bundle){
-    add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_4_bundle_func');
-  } else {
-    add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_4_func');
-  }
-}
-
 function ldc_enqueue_bootstrap_3_func(){
   $url = 'https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js';
-  wp_enqueue_script('bootstrap-4', $url, array('jquery'), '3.4.1', true);
+  wp_enqueue_script('bootstrap-3', $url, array('jquery'), '3.4.1', true);
   $url = 'https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css'
-  wp_enqueue_style('bootstrap-4', $url, array(), '3.4.1');
+  wp_enqueue_style('bootstrap-3', $url, array(), '3.4.1');
 }
 
-function ldc_enqueue_bootstrap_3(){
-  add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_3_func');
+function ldc_enqueue_bootstrap($version = 4, $bundle = true){
+  if($version == 4){
+    if($bundle){
+      add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_4_bundle_func');
+    } else {
+      add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_4_func');
+    }
+  } elseif($version == 3){
+    add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_3_func');
+  }
 }
 
 function ldc_enqueue_fontawesome_5_func(){
@@ -441,15 +441,24 @@ function ldc_enqueue_fontawesome_5_func(){
   wp_enqueue_style('fontawesome-5', $url, array(), '5.8.2');
 }
 
-function ldc_enqueue_fontawesome_5(){
-  add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_5_func');
-}
-
 function ldc_enqueue_fontawesome_5_pro_func(){
   $url = 'https://pro.fontawesome.com/releases/v5.8.2/css/all.css'
   wp_enqueue_style('fontawesome-5', $url, array(), '5.8.2');
 }
 
-function ldc_enqueue_fontawesome_5_pro(){
-  add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_5_pro_func');
+function ldc_enqueue_fontawesome_4_func(){
+  $url = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
+  wp_enqueue_style('fontawesome-4', $url, array(), '4.7.0');
+}
+
+function ldc_enqueue_fontawesome($version = 5, $pro = false){
+  if($version == 5){
+    if($pro){
+      add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_5_pro_func');
+    } else {
+      add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_5_func');
+    }
+  } elseif($version == 4){
+    add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_4_func');
+  }
 }
