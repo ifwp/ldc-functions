@@ -80,10 +80,8 @@ function ldc_url_to_postid($url = ''){
 }
 
 function ldc_http_referer_to_postid(){
-  if(wp_parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == wp_parse_url(site_url(), PHP_URL_HOST)){
-    return url_to_postid($_SERVER['HTTP_REFERER']);
-  }
-  return 0;
+  $referer = wp_get_referer();
+  return url_to_postid($referer);
 }
 
 function ldc_restrict_frontend_to_logged_in_users_func(){
