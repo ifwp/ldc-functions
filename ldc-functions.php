@@ -462,3 +462,14 @@ function ldc_enqueue_fontawesome($version = 5, $pro = false){
     add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_4_func');
   }
 }
+
+function ldc_remove_private_title_format_func($private_title_format){
+  if(!is_admin()){
+    return '%s';
+  }
+  return $private_title_format;
+}
+
+function ldc_remove_private_title_format(){
+  add_filter('private_title_format', 'ldc_remove_private_title_format_func');
+}
