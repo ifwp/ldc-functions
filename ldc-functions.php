@@ -187,6 +187,8 @@ function ldc_base64url_encode($data){
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
+/** inspired by the awesome wp_create_nonce_guest function by @Mte90 https://gist.github.com/Mte90 */
+
 function ldc_wp_create_guest_nonce($action = -1){
   $i = wp_nonce_tick();
   return substr(wp_hash($i . '|' . $action . '|0|', 'nonce'), -12, 10);
@@ -221,8 +223,9 @@ function ldc_wp_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   return add_query_arg($name, wp_create_nonce($action), $actionurl);
 }
 
+/** inspired by the awesome programmatic_login function by @iandunn https://gist.github.com/iandunn */
+
 function ldc_programmatic_login($userid = 0){
-  /** inspired by the awesome programmatic_login function by @iandunn https://gist.github.com/iandunn */
   if(get_current_user_id() != $userid){
     $user_info = get_userdata($userid);
     if($user_info){
