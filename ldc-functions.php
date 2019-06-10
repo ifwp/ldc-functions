@@ -137,3 +137,29 @@ function ldc_restrict_admin_bar_to_admin_users_func($content){
 function ldc_restrict_admin_bar_to_admin_users(){
   add_filter('show_admin_bar', 'ldc_restrict_admin_bar_to_admin_users_func');
 }
+
+function ldc_fix_rwmb_validate_func(RW_Meta_Box $object){
+  if(empty($object->meta_box['validation'])){
+    return;
+  }
+  $file = plugin_dir_path(__FILE__) . 'js/rwmb-validate.js';
+	$url = plugin_dir_url(__FILE__) . 'js/rwmb-validate.js';
+  if(file_exists($file)){
+    wp_dequeue_script('rwmb-validate');
+		wp_deregister_script('rwmb-validate');
+    wp_enqueue_script('rwmb-validate', $url, array('jquery-validation', 'jquery-validation-additional-methods'), '4.18.2', true);
+    if(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
+      RWMB_Helpers_Field::localize_script_once('rwmb-validate', 'rwmbValidate', array(
+        'summaryMessage' => esc_html__('Please correct the errors highlighted below and try again.', 'meta-box'),
+      ));
+    } elseif(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
+      RWMB_Field::localize_script('rwmb-validate', 'rwmbValidate', array(
+        'summaryMessage' => esc_html__('Please correct the errors highlighted below and try again.', 'meta-box'),
+      ));
+    }
+  }
+}
+
+function ldc_fix_rwmb_validate(){
+  add_action('rwmb_enqueue_scripts', 'ldc_fix_rwmb_validate_func');
+}
