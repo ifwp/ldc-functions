@@ -398,3 +398,7 @@ function ldc_enqueue_popper_func(){
 function ldc_enqueue_popper(){
   add_action('wp_enqueue_scripts', 'ldc_enqueue_popper_func');
 }
+
+function ldc_disable_beaver_builder_inline_editing(){
+  add_filter('fl_inline_editing_enabled', '__return_false');
+}
