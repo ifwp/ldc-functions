@@ -80,7 +80,7 @@ function ldc_url_to_postid($url = ''){
 }
 
 function ldc_http_referer_to_postid(){
-  if(wp_parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) === wp_parse_url(site_url(), PHP_URL_HOST)){
+  if(wp_parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == wp_parse_url(site_url(), PHP_URL_HOST)){
     return ldc_url_to_postid($_SERVER['HTTP_REFERER']);
   }
   return 0;
@@ -223,10 +223,28 @@ function ldc_wp_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   return add_query_arg($name, wp_create_nonce($action), $actionurl);
 }
 
-function ldc_allow_programmatic_login(){
-  /** enable the awesome programmatic_login function by @iandunn https://gist.github.com/iandunn */
-  $file = plugin_dir_path(__FILE__) . 'programmatic_login.php';
-  if(file_exists($file)){
-    require_once($file);
+function ldc_programmatic_login($userid = 0){
+  /** inspired by the awesome programmatic_login function by @iandunn https://gist.github.com/iandunn */
+  if(get_current_user_id() != $userid){
+    $user_info = get_userdata($userid);
+    if($user_info){
+      if(is_user_logged_in()){
+        wp_logout();
+      }
+      add_filter('authenticate', 'ldc_allow_programmatic_login', 5, 3);
+      $user = wp_signon(array(
+	'user_login' => $user_info->user_login,
+      ));
+      remove_filter('authenticate', 'ldc_allow_programmatic_login', 5, 3);
+      if(!is_wp_error($user)){
+        wp_set_current_user($user->ID, $user->user_login);
+        return is_user_logged_in();
+      }
+    }
   }
+  return false;
+}
+
+function ldc_allow_programmatic_login($user, $username, $password){
+  return get_user_by('login', $username);
 }
