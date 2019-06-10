@@ -80,7 +80,7 @@ function ldc_url_to_postid($url = ''){
   return 0;
 }
 
-function ldc_http_referer_to_postid(){
+function ldc_referer_to_postid(){
   $referer = wp_get_referer();
   if($referer){
     return url_to_postid($referer);
@@ -88,22 +88,22 @@ function ldc_http_referer_to_postid(){
   return 0;
 }
 
-function ldc_restrict_frontend_to_logged_in_users_func(){
+function ldc_restrict_frontend_func(){
   $restrict = false;
   if(!is_user_logged_in()){
     $restrict = true;
   }
-  $restrict = apply_filters('ldc_restrict_frontend_to_logged_in_users', $restrict);
+  $restrict = apply_filters('ldc_restrict_frontend', $restrict);
   if($restrict){
     auth_redirect();
   }
 }
 
-function ldc_restrict_frontend_to_logged_in_users(){
-  add_action('template_redirect', 'ldc_restrict_frontend_to_logged_in_users_func');
+function ldc_restrict_frontend(){
+  add_action('template_redirect', 'ldc_restrict_frontend_func');
 }
 
-function ldc_restrict_rest_api_to_logged_in_users_func($result){
+function ldc_restrict_rest_api_func($result){
   if(!empty($result)){
    return $result;
   }
@@ -111,7 +111,7 @@ function ldc_restrict_rest_api_to_logged_in_users_func($result){
   if(!is_user_logged_in()){
     $restrict = true;
   }
-  $restrict = apply_filters('ldc_restrict_rest_api_to_logged_in_users', $restrict);
+  $restrict = apply_filters('ldc_restrict_rest_api', $restrict);
   if($restrict){
     return new WP_Error('rest_not_logged_in', 'API Requests are only supported for authenticated requests.', array(
       'status' => 401,
@@ -120,16 +120,16 @@ function ldc_restrict_rest_api_to_logged_in_users_func($result){
   return $result;
 }
 
-function ldc_restrict_rest_api_to_logged_in_users(){
-  add_filter('rest_authentication_errors', 'ldc_restrict_rest_api_to_logged_in_users_func');
+function ldc_restrict_rest_api(){
+  add_filter('rest_authentication_errors', 'ldc_restrict_rest_api_func');
 }
 
-function ldc_restrict_dashboard_to_admin_users_func(){
+function ldc_restrict_dashboard_func(){
   $restrict = false;
   if(!current_user_can('manage_options') and (!wp_doing_ajax())){
     $restrict = true;
   }
-  $restrict = apply_filters('ldc_restrict_dashboard_to_admin_users', $restrict);
+  $restrict = apply_filters('ldc_restrict_dashboard', $restrict);
   if($restrict){
     $location = home_url();
     wp_safe_redirect($location);
@@ -137,24 +137,24 @@ function ldc_restrict_dashboard_to_admin_users_func(){
   }
 }
 
-function ldc_restrict_dashboard_to_admin_users(){
-  add_action('admin_init', 'ldc_restrict_dashboard_to_admin_users_func');
+function ldc_restrict_dashboard(){
+  add_action('admin_init', 'ldc_restrict_dashboard_func');
 }
 
-function ldc_restrict_admin_bar_to_admin_users_func($content){
+function ldc_restrict_admin_bar_func($content){
   $restrict = false;
   if(!current_user_can('manage_options')){
     $restrict = true;
   }
-  $restrict = apply_filters('ldc_restrict_admin_bar_to_admin_users', $restrict);
+  $restrict = apply_filters('ldc_restrict_admin_bar', $restrict);
   if($restrict){
     return false;
   }
   return $content;
 }
 
-function ldc_restrict_admin_bar_to_admin_users(){
-  add_filter('show_admin_bar', 'ldc_restrict_admin_bar_to_admin_users_func');
+function ldc_restrict_admin_bar(){
+  add_filter('show_admin_bar', 'ldc_restrict_admin_bar_func');
 }
 
 function ldc_fix_rwmb_validate_func(RW_Meta_Box $object){
@@ -190,18 +190,18 @@ function ldc_base64url_encode($data){
 
 /** inspired by the awesome wp_create_nonce_guest function by @Mte90 https://gist.github.com/Mte90 */
 
-function ldc_wp_create_guest_nonce($action = -1){
+function ldc_create_guest_nonce($action = -1){
   $i = wp_nonce_tick();
   return substr(wp_hash($i . '|' . $action . '|0|', 'nonce'), -12, 10);
 }
 
-function ldc_wp_guest_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
+function ldc_guest_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   $actionurl = str_replace('&amp;', '&', $actionurl);
   /** fix */
-  return add_query_arg($name, ldc_wp_create_guest_nonce($action), $actionurl);
+  return add_query_arg($name, ldc_create_guest_nonce($action), $actionurl);
 }
 
-function ldc_wp_verify_guest_nonce($nonce, $action = -1){
+function ldc_verify_guest_nonce($nonce, $action = -1){
   $nonce = (string) $nonce;
   if(empty($nonce)){
     return false;
@@ -218,7 +218,7 @@ function ldc_wp_verify_guest_nonce($nonce, $action = -1){
   return false;
 }
 
-function ldc_wp_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
+function ldc_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   $actionurl = str_replace('&amp;', '&', $actionurl);
   /** fix */
   return add_query_arg($name, wp_create_nonce($action), $actionurl);
@@ -335,7 +335,7 @@ function ldc_json_decode_parsed_response($response = array(), $assoc = false, $d
   return $response;
 }
 
-function ldc_wp_is_post_revision($post_id = 0){
+function ldc_is_post_revision($post_id = 0){
   if($post_id){
     $post_revision_id = wp_is_post_revision($post_id);
     if($post_revision_id){
