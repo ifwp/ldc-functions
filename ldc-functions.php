@@ -336,3 +336,16 @@ function ldc_json_decode_parsed_response($response = array(), $assoc = false, $d
   }
   return $response;
 }
+
+function ldc_wp_is_post_revision($post_id = 0){
+  if($post_id){
+    $post_revision_id = wp_is_post_revision($post_id);
+    if($post_revision_id){
+      return $post_revision_id;
+    }
+    if(get_post_status($post_id) == 'auto-draft'){
+      return (int) $post_id;
+    }
+  }
+  return 0;
+}
