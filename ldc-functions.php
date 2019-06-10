@@ -248,3 +248,35 @@ function ldc_programmatic_login($userid = 0){
 function ldc_allow_programmatic_login($user, $username, $password){
   return get_user_by('login', $username);
 }
+
+function ldc_wp_remote_retrieve_response($response = null){
+  if($response){
+    if(is_wp_error($response)){
+      return array(
+	'success' => false,
+	'data' => $response->get_error_message(),
+      );
+    }
+    $response_code = wp_remote_retrieve_response_code($response);
+    if($response_code == 200){
+      return array(
+	'success' => true,
+	'data' => wp_remote_retrieve_body($response),
+      );
+    }
+    $response_message = wp_remote_retrieve_response_message($response);
+    if(!$response_message){
+	$response_message = get_status_header_desc($response_code);
+    }
+    if($response_message){
+      return array(
+	'success' => false,
+	'data' => $response_message,
+      );
+    }
+  }
+  return array(
+    'success' => false,
+    'data' => 'Unknown error occurred',
+  );
+}
