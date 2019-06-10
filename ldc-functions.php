@@ -392,7 +392,7 @@ function ldc_dropdowns_toggled_by_hovering(){
 
 function ldc_enqueue_popper_func(){
   $url = 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js';
-  wp_enqueue_script('popperjs', $url, array('jquery'), '1.14.7', true);
+  wp_enqueue_script('popper', $url, array('jquery'), '1.14.7', true);
 }
 
 function ldc_enqueue_popper(){
@@ -401,4 +401,55 @@ function ldc_enqueue_popper(){
 
 function ldc_disable_beaver_builder_inline_editing(){
   add_filter('fl_inline_editing_enabled', '__return_false');
+}
+
+function ldc_enqueue_bootstrap_4_bundle_func(){
+  $url = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js';
+  wp_enqueue_script('bootstrap-4', $url, array('jquery'), '4.3.1', true);
+  $url = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'
+  wp_enqueue_style('bootstrap-4', $url, array(), '4.3.1');
+}
+
+function ldc_enqueue_bootstrap_4_func(){
+  $url = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js';
+  wp_enqueue_script('bootstrap-4', $url, array('jquery'), '4.3.1', true);
+  $url = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'
+  wp_enqueue_style('bootstrap-4', $url, array(), '4.3.1');
+}
+
+function ldc_enqueue_bootstrap_4($bundle = true){
+  if($bundle){
+    add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_4_bundle_func');
+  } else {
+    add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_4_func');
+  }
+}
+
+function ldc_enqueue_bootstrap_3_func(){
+  $url = 'https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js';
+  wp_enqueue_script('bootstrap-4', $url, array('jquery'), '3.4.1', true);
+  $url = 'https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css'
+  wp_enqueue_style('bootstrap-4', $url, array(), '3.4.1');
+}
+
+function ldc_enqueue_bootstrap_3(){
+  add_action('wp_enqueue_scripts', 'ldc_enqueue_bootstrap_3_func');
+}
+
+function ldc_enqueue_fontawesome_5_func(){
+  $url = 'https://use.fontawesome.com/releases/v5.8.2/css/all.css'
+  wp_enqueue_style('fontawesome-5', $url, array(), '5.8.2');
+}
+
+function ldc_enqueue_fontawesome_5(){
+  add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_5_func');
+}
+
+function ldc_enqueue_fontawesome_5_pro_func(){
+  $url = 'https://pro.fontawesome.com/releases/v5.8.2/css/all.css'
+  wp_enqueue_style('fontawesome-5', $url, array(), '5.8.2');
+}
+
+function ldc_enqueue_fontawesome_5_pro(){
+  add_action('wp_enqueue_scripts', 'ldc_enqueue_fontawesome_5_pro_func');
 }
