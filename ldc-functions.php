@@ -351,6 +351,7 @@ function ldc_wp_is_post_revision($post_id = 0){
 }
 
 function ldc_sideload_url($url = '', $post_id = null, $filename = ''){
+  ldc_maybe_load_media_functions();
   $file_array = array(
     'tmp_name' => download_url($url),
   );
@@ -368,4 +369,12 @@ function ldc_sideload_url($url = '', $post_id = null, $filename = ''){
     }
   }
   return 0;
+}
+
+function ldc_maybe_load_media_functions(){
+  if(!is_admin()){
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+    require_once(ABSPATH . 'wp-admin/includes/media.php');
+  }
 }
