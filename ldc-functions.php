@@ -389,3 +389,12 @@ function ldc_dropdowns_toggled_by_hovering_func(){
 function ldc_dropdowns_toggled_by_hovering(){
   add_action('wp_enqueue_scripts', 'ldc_dropdowns_toggled_by_hovering_func');
 }
+
+function ldc_enqueue_popper_func(){
+  $url = 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js';
+  wp_enqueue_script('popperjs', $url, array('jquery'), '1.14.7', true);
+}
+
+function ldc_enqueue_popper(){
+  add_action('wp_enqueue_scripts', 'ldc_enqueue_popper_func');
+}
