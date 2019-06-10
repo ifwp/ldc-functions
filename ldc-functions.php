@@ -349,3 +349,23 @@ function ldc_wp_is_post_revision($post_id = 0){
   }
   return 0;
 }
+
+function ldc_sideload_url($url = '', $post_id = null, $filename = ''){
+  $file_array = array(
+    'tmp_name' => download_url($url),
+  );
+  if(!is_wp_error($file_array['tmp_name'])){
+    if($filename){
+      $file_array['name'] = $filename;
+    } else {
+      $file_array['name'] = basename(parse_url($url, PHP_URL_PATH));
+    }
+    $attachment_id = media_handle_sideload($file_array, $post_id);
+    if(is_wp_error($attachment_id)){
+      @unlink($file_array['tmp_name']);
+    } else {
+      return $attachment_id;
+    }
+  }
+  return 0;
+}
