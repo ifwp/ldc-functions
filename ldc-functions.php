@@ -180,3 +180,43 @@ function ldc_fix_rwmb_validate_func(RW_Meta_Box $object){
 function ldc_fix_rwmb_validate(){
   add_action('rwmb_enqueue_scripts', 'ldc_fix_rwmb_validate_func');
 }
+
+function ldc_base64url_decode($data){
+  return base64_decode(strtr($data, '-_', '+/'));
+}
+
+function ldc_base64url_encode($data){
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+function ldc_wp_create_guest_nonce($action = -1){
+  $i = wp_nonce_tick();
+  return substr(wp_hash($i . '|' . $action . '|0|', 'nonce'), -12, 10);
+}
+
+function ldc_wp_guest_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
+  $actionurl = str_replace('&amp;', '&', $actionurl);
+  return add_query_arg($name, ldc_wp_create_guest_nonce($action), $actionurl);
+}
+
+function ldc_wp_verify_guest_nonce($nonce, $action = -1){
+  $nonce = (string) $nonce;
+  if(empty($nonce)){
+    return false;
+  }
+  $i = wp_nonce_tick();
+  $expected = substr(wp_hash($i . '|' . $action . '|0|', 'nonce'), -12, 10);
+  if(hash_equals($expected, $nonce)){
+    return 1;
+  }
+  $expected = substr(wp_hash(($i - 1) . '|' . $action . '|0|', 'nonce'), -12, 10);
+  if(hash_equals($expected, $nonce)){
+    return 2;
+  }
+  return false;
+}
+
+function ldc_wp_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
+  $actionurl = str_replace('&amp;', '&', $actionurl);
+  return add_query_arg($name, wp_create_nonce($action), $actionurl);
+}
