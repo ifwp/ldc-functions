@@ -13,9 +13,9 @@ function ldc_guid_to_postid($guid = ''){
   return 0;
 }
 
-function ldc_attachment_url_to_postid($url = ''){
+function ldc_attachment_image_url_to_postid($url = ''){
   if($url){
-    /** full size */
+    /** original */
     $post_id = ldc_guid_to_postid($url);
     if($post_id){
       return $post_id;
@@ -54,7 +54,7 @@ function ldc_url_to_postid($url = ''){
     if($post_id){
       return $post_id;
     }
-    $post_id = ldc_attachment_url_to_postid($url);
+    $post_id = ldc_attachment_image_url_to_postid($url);
     if($post_id){
       return $post_id;
     }
