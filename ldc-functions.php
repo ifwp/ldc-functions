@@ -70,12 +70,12 @@ function ldc_http_referer_to_postid(){
 }
 
 function ldc_restrict_frontend_to_logged_in_users_func(){
-  $r = false;
+  $restrict = false;
   if(!is_user_logged_in()){
-    $r = true;
+    $restrict = true;
   }
-  $r = apply_filters('ldc_restrict_frontend_to_logged_in_users', $r);
-  if($r){
+  $restrict = apply_filters('ldc_restrict_frontend_to_logged_in_users', $restrict);
+  if($restrict){
     auth_redirect();
   }
 }
@@ -88,12 +88,12 @@ function ldc_restrict_rest_api_to_logged_in_users_func($result){
   if(!empty($result)){
  	  return $result;
  	}
-  $r = false;
+  $restrict = false;
   if(!is_user_logged_in()){
-    $r = true;
+    $restrict = true;
   }
-  $r = apply_filters('ldc_restrict_rest_api', $r);
-  if($r){
+  $restrict = apply_filters('ldc_restrict_rest_api_to_logged_in_users', $restrict);
+  if($restrict){
     return new WP_Error('rest_not_logged_in', 'API Requests are only supported for authenticated requests.', array(
       'status' => 401,
     ));
@@ -103,4 +103,37 @@ function ldc_restrict_rest_api_to_logged_in_users_func($result){
 
 function ldc_restrict_rest_api_to_logged_in_users(){
   add_filter('rest_authentication_errors', 'ldc_restrict_rest_api_to_logged_in_users_func');
+}
+
+function ldc_restrict_dashboard_to_admin_users_func(){
+  $restrict = false;
+  if(!current_user_can('manage_options') and (!wp_doing_ajax())){
+    $restrict = true;
+  }
+  $restrict = apply_filters('ldc_restrict_dashboard_to_admin_users', $restrict);
+  if($restrict){
+    $location = home_url();
+    wp_safe_redirect($location);
+    exit;
+  }
+}
+
+function ldc_restrict_dashboard_to_admin_users(){
+  add_action('admin_init', 'ldc_restrict_dashboard_to_admin_users_func');
+}
+
+function ldc_restrict_admin_bar_to_admin_users_func($content){
+  $restrict = false;
+  if(!current_user_can('manage_options')){
+    $restrict = true;
+  }
+  $restrict = apply_filters('ldc_restrict_admin_bar_to_admin_users', $restrict);
+  if($restrict){
+    return false;
+  }
+  return $content;
+}
+
+function ldc_restrict_admin_bar_to_admin_users(){
+  add_filter('show_admin_bar', 'ldc_restrict_admin_bar_to_admin_users_func');
 }
