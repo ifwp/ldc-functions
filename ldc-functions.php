@@ -378,3 +378,45 @@ function ldc_require_media_functions(){
     require_once(ABSPATH . 'wp-admin/includes/media.php');
   }
 }
+
+function ldc_dropdowns_toggled_by_hovering_func(){
+  $file = plugin_dir_path(__FILE__) . 'js/jquery.hoverIntent.min.js';
+  $url = plugin_dir_url(__FILE__) . 'js/jquery.hoverIntent.min.js';
+  if(file_exists($file)){
+    wp_enqueue_script('jquery-hoverIntent', $url, array('jquery'), '1.10.0', true);
+    ob_start(); ?>
+    jQuery(function($){
+      $('.dropdown-toggle').hoverIntent({
+	over: function(){
+	  if(!$(this).parent('.dropdown').hasClass('open')){
+	    $(this).dropdown('toggle').focus();
+	  }
+	},
+	out: function(e){
+	  if(!$(e.relatedTarget).hasClass('dropdown-menu')){
+	    if($(this).parent('.dropdown').hasClass('open')){
+	      $(this).dropdown('toggle').blur();
+	    }
+	  }
+	},
+	timeout: 100,
+      });
+      $('.dropdown-menu').hoverIntent({
+	out: function(e){
+	  if(!$(e.relatedTarget).hasClass('dropdown-toggle')){
+	    if($(this).parent('.dropdown').hasClass('open')){
+	      $(this).prev('.dropdown-toggle').dropdown('toggle').blur();
+	    }
+	  }
+	},
+	timeout: 100,
+      });
+    });<?php
+    $data = ob_get_clean();
+    wp_add_inline_script('jquery-hoverIntent', $data);
+  }
+}
+
+function ldc_dropdowns_toggled_by_hovering(){
+  add_action('wp_enqueue_scripts', 'ldc_dropdowns_toggled_by_hovering_func');
+}
