@@ -9,7 +9,9 @@ jQuery( function ( $ ) {
 			$form.siblings( '#message' ).remove();
 			$form.before( '<div id="message" class="error"><p>' + rwmbValidate.summaryMessage + '</p></div>' );
 		},
-		ignore: ':not([class|="rwmb"])',
+		/** fix */
+		/// ignore: ':not([class|="rwmb"])',
+		ignore: ':hidden [class|="rwmb"], :not([class|="rwmb"])',
 		errorPlacement: function(error, element) {
 			error.appendTo( element.closest( '.rwmb-input' ) );
 		},
