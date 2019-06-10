@@ -196,6 +196,7 @@ function ldc_wp_create_guest_nonce($action = -1){
 
 function ldc_wp_guest_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   $actionurl = str_replace('&amp;', '&', $actionurl);
+  /** fix */
   return add_query_arg($name, ldc_wp_create_guest_nonce($action), $actionurl);
 }
 
@@ -218,5 +219,6 @@ function ldc_wp_verify_guest_nonce($nonce, $action = -1){
 
 function ldc_wp_nonce_url($actionurl, $action = -1, $name = '_wpnonce'){
   $actionurl = str_replace('&amp;', '&', $actionurl);
+  /** fix */
   return add_query_arg($name, wp_create_nonce($action), $actionurl);
 }
