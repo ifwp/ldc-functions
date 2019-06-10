@@ -61,3 +61,10 @@ function ldc_url_to_postid($url = ''){
   }
   return 0;
 }
+
+function ldc_http_referer_to_postid(){
+  if(wp_parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) === wp_parse_url(site_url(), PHP_URL_HOST)){
+    return ldc_url_to_postid($_SERVER['HTTP_REFERER']);
+  }
+  return 0;
+}
