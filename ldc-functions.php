@@ -249,7 +249,7 @@ function ldc_allow_programmatic_login($user, $username, $password){
   return get_user_by('login', $username);
 }
 
-function ldc_wp_remote_retrieve_response($response = null){
+function ldc_retrieve_remote_response($response = null){
   if($response){
     if(is_wp_error($response)){
       return array(
