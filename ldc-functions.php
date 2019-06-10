@@ -16,6 +16,7 @@
 defined('ABSPATH') or die('No script kiddies please!');
 
 define('LDC_Functions', true);
+define('LDC_Functions_Version', '0.6.10');
 
 function ldc_guid_to_postid($guid = ''){
   if($guid){
@@ -384,52 +385,16 @@ function ldc_dropdowns_toggled_by_hovering_func(){
   $url = plugin_dir_url(__FILE__) . 'js/jquery.hoverIntent.min.js';
   if(file_exists($file)){
     wp_enqueue_script('jquery-hoverIntent', $url, array('jquery'), '1.10.0', true);
-    ob_start(); ?>
-    jQuery(function($){
-      $('.dropdown-toggle').hoverIntent({
-	over: function(){
-	  if(!$(this).parent('.dropdown').hasClass('open')){
-	    $(this).dropdown('toggle').focus();
-	  }
-	},
-	out: function(e){
-	  if(!$(e.relatedTarget).hasClass('dropdown-menu')){
-	    if($(this).parent('.dropdown').hasClass('open')){
-	      $(this).dropdown('toggle').blur();
-	    }
-	  }
-	},
-	timeout: 100,
-      });
-      $('.dropdown-menu').hoverIntent({
-	out: function(e){
-	  if(!$(e.relatedTarget).hasClass('dropdown-toggle')){
-	    if($(this).parent('.dropdown').hasClass('open')){
-	      $(this).prev('.dropdown-toggle').dropdown('toggle').blur();
-	    }
-	  }
-	},
-	timeout: 100,
-      });
-    });<?php
-    $data = ob_get_clean();
-    wp_add_inline_script('jquery-hoverIntent', $data);
-    ob_start(); ?>
-    .dropdown-toggle,
-    .dropdown-menu {
-      /** .rounded-0 */
-      border-radius: 0 !important;
-    }
-    .dropdown-menu {
-      /** .border-0 */
-      border: 0 !important;
-      /** .m-0 */
-      margin: 0 !important;
-      /** .shadow */
-      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    }<?php
-    $data = ob_get_clean();
-    wp_add_inline_style('bootstrap', $data);
+  }
+  $file = plugin_dir_path(__FILE__) . 'js/ldc-dropdowns-toggled-by-hovering.js';
+  $url = plugin_dir_url(__FILE__) . 'js/ldc-dropdowns-toggled-by-hovering.js';
+  if(file_exists($file)){
+    wp_enqueue_script('ldc-dropdowns-toggled-by-hovering', $url, array('jquery-hoverIntent'), LDC_Functions_Version, true);
+  }
+  $file = plugin_dir_path(__FILE__) . 'css/ldc-dropdowns-toggled-by-hovering.css';
+  $url = plugin_dir_url(__FILE__) . 'css/ldc-dropdowns-toggled-by-hovering.css';
+  if(file_exists($file)){
+    wp_enqueue_style('ldc-dropdowns-toggled-by-hovering', $url, array(), LDC_Functions_Version);
   }
 }
 
