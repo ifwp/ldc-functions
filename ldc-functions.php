@@ -161,21 +161,18 @@ function ldc_fix_rwmb_validate_func(RW_Meta_Box $object){
   if(empty($object->meta_box['validation'])){
     return;
   }
-  $file = plugin_dir_path(__FILE__) . 'js/rwmb-validate.js';
   $url = plugin_dir_url(__FILE__) . 'js/rwmb-validate.js';
-  if(file_exists($file)){
-    wp_dequeue_script('rwmb-validate');
-    wp_deregister_script('rwmb-validate');
-    wp_enqueue_script('rwmb-validate', $url, array('jquery-validation', 'jquery-validation-additional-methods'), '4.18.2', true);
-    if(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
-      RWMB_Helpers_Field::localize_script_once('rwmb-validate', 'rwmbValidate', array(
-        'summaryMessage' => esc_html__('Please correct the errors highlighted below and try again.', 'meta-box'),
-      ));
-    } elseif(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
-      RWMB_Field::localize_script('rwmb-validate', 'rwmbValidate', array(
-        'summaryMessage' => esc_html__('Please correct the errors highlighted below and try again.', 'meta-box'),
-      ));
-    }
+  wp_dequeue_script('rwmb-validate');
+  wp_deregister_script('rwmb-validate');
+  wp_enqueue_script('rwmb-validate', $url, array('jquery-validation', 'jquery-validation-additional-methods'), '4.18.2', true);
+  if(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
+    RWMB_Helpers_Field::localize_script_once('rwmb-validate', 'rwmbValidate', array(
+      'summaryMessage' => esc_html__('Please correct the errors highlighted below and try again.', 'meta-box'),
+    ));
+  } elseif(is_callable(array('RWMB_Helpers_Field', 'localize_script_once'))){
+    RWMB_Field::localize_script('rwmb-validate', 'rwmbValidate', array(
+      'summaryMessage' => esc_html__('Please correct the errors highlighted below and try again.', 'meta-box'),
+    ));
   }
 }
 
@@ -381,21 +378,12 @@ function ldc_require_media_functions(){
 }
 
 function ldc_dropdowns_toggled_by_hovering_func(){
-  $file = plugin_dir_path(__FILE__) . 'js/jquery.hoverIntent.min.js';
   $url = plugin_dir_url(__FILE__) . 'js/jquery.hoverIntent.min.js';
-  if(file_exists($file)){
-    wp_enqueue_script('jquery-hoverIntent', $url, array('jquery'), '1.10.0', true);
-  }
-  $file = plugin_dir_path(__FILE__) . 'js/ldc-dropdowns-toggled-by-hovering.js';
+  wp_enqueue_script('jquery-hoverIntent', $url, array('jquery'), '1.10.0', true);
   $url = plugin_dir_url(__FILE__) . 'js/ldc-dropdowns-toggled-by-hovering.js';
-  if(file_exists($file)){
-    wp_enqueue_script('ldc-dropdowns-toggled-by-hovering', $url, array('jquery-hoverIntent'), LDC_Functions_Version, true);
-  }
-  $file = plugin_dir_path(__FILE__) . 'css/ldc-dropdowns-toggled-by-hovering.css';
+  wp_enqueue_script('ldc-dropdowns-toggled-by-hovering', $url, array('jquery-hoverIntent'), LDC_Functions_Version, true);
   $url = plugin_dir_url(__FILE__) . 'css/ldc-dropdowns-toggled-by-hovering.css';
-  if(file_exists($file)){
-    wp_enqueue_style('ldc-dropdowns-toggled-by-hovering', $url, array(), LDC_Functions_Version);
-  }
+  wp_enqueue_style('ldc-dropdowns-toggled-by-hovering', $url, array(), LDC_Functions_Version);
 }
 
 function ldc_dropdowns_toggled_by_hovering(){
