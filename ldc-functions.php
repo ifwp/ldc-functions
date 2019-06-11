@@ -485,3 +485,25 @@ function ldc_only_show_current_user_attachments_func($query = array()){
 function ldc_only_show_current_user_attachments(){
   add_filter('ajax_query_attachments_args', 'ldc_only_show_current_user_attachments_func');
 }
+
+/** not needed since 4.5.0 */
+/*function ldc_get_the_excerpt($post = null, $length = 55){
+  $post = get_post($post);
+  if(empty($post)){
+    return '';
+  }
+  if(post_password_required($post)){
+    return __('There is no excerpt because this is a protected post.');
+  }
+  $text = $post->post_excerpt;
+  if('' == $text){
+    $text = $post->post_content;
+    $text = strip_shortcodes($text);
+    $text = apply_filters('the_content', $text);
+    $text = str_replace(']]>', ']]&gt;', $text);
+    $excerpt_length = apply_filters('excerpt_length', $length);
+    $excerpt_more = apply_filters('excerpt_more', ' ' . '[&hellip;]');
+    $text = wp_trim_words($text, $excerpt_length, $excerpt_more);
+  }
+  return $text;
+}*/
