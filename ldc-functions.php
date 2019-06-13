@@ -510,7 +510,11 @@ function ldc_only_show_current_user_attachments(){
 
 /** back-compat */
 function ldc_get_the_excerpt($post = null, $length = 55){
-  $excerpt = get_the_excerpt($post);
-  $excerpt_more = apply_filters('excerpt_more', ' ' . '[&hellip;]');
-  return wp_trim_words($excerpt, $length, $excerpt_more);
+  $text = get_the_excerpt($post);
+  $excerpt_length = apply_filters('excerpt_length', 55);
+  if($length < $excerpt_length){
+    $excerpt_more = apply_filters('excerpt_more', ' ' . '[&hellip;]');
+    $text = wp_trim_words($text, $length, $excerpt_more);
+  }
+  return $text;
 }
