@@ -507,3 +507,10 @@ function ldc_only_show_current_user_attachments(){
   }
   return $text;
 }*/
+
+/** back-compat */
+function ldc_get_the_excerpt($post = null, $length = 55){
+  $excerpt = get_the_excerpt($post);
+  $excerpt_more = apply_filters('excerpt_more', ' ' . '[&hellip;]');
+  return wp_trim_words($excerpt, $length, $excerpt_more);
+}
