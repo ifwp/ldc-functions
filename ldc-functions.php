@@ -518,3 +518,115 @@ function ldc_get_the_excerpt($post = null, $length = 55){
   }
   return $text;
 }
+
+function ldc_restrict_email_address(){
+	add_action('admin_init', '_ldc_restrict_email_address_admin_init');
+	add_action('template_redirect', '_ldc_restrict_email_address_template_redirect');
+	add_action('user_request_action_confirmed', '_ldc_restrict_email_address_user_request_action_confirmed');
+	add_filter('user_request_action_description', '_ldc_restrict_email_address_user_request_action_description', 10, 2);
+}
+
+function _ldc_restrict_email_address_admin_init(){
+	_ldc_restrict_email_address_message_helper('admin_init');
+}
+
+function _ldc_restrict_email_address_template_redirect(){
+	_ldc_restrict_email_address_message_helper('template_redirect');
+}
+
+function _ldc_restrict_email_address_message_helper($context = ''){
+	if(is_user_logged_in()){
+		$user = get_userdata(get_current_user_id());
+		if($user->ID > 1){
+			if(!get_user_meta($user->ID, 'ldc_restrict_email_address_verified', true)){
+				_ldc_restrict_email_address_cleanup_requests($user->ID);
+				$request_id = wp_create_user_request($user->user_email, 'verify-email-address', array(
+					'context' => $context,
+				));
+				if($request_id and !is_wp_error($request_id)){
+					wp_send_user_request($request_id);
+				}
+				$die = _ldc_restrict_email_address_message($user->display_name, $user->user_email);
+				wp_die($die, __('Verify your email address'));
+			}
+		}
+	}
+}
+
+function _ldc_restrict_email_address_cleanup_requests($author = 0){
+	$expires = (int) apply_filters('user_request_key_expiration', DAY_IN_SECONDS);
+	$requests_query = new WP_Query(array(
+		'post_type' => 'user_request',
+		'posts_per_page' => -1,
+		'post_status' => 'request-pending',
+		'fields' => 'ids',
+		'date_query' => array(
+			array(
+				'column' => 'post_modified_gmt',
+				'before' => $expires . ' seconds ago',
+			),
+		),
+		'author' => $author,
+	));
+	$request_ids = $requests_query->posts;
+	foreach($request_ids as $request_id){
+		wp_update_post(array(
+			'ID' => $request_id,
+			'post_status' => 'request-failed',
+			'post_password' => '',
+		));
+	}
+}
+
+function _ldc_restrict_email_address_user_request_action_confirmed($request_id){
+	$request_id = absint($request_id);
+	$request = wp_get_user_request_data($request_id);
+	if($request){
+		if(in_array($request->status, array('request-pending', 'request-failed', 'request-confirmed'), true)){
+			update_post_meta($request_id, '_wp_user_request_completed_timestamp', time());
+			wp_update_post(array(
+				'ID' => $request_id,
+				'post_status' => 'request-completed',
+			));
+			update_user_meta($request->user_id, 'ldc_restrict_email_address_verified', $request_id);
+			$request_data = $request->request_data;
+			$context = isset($request_data['context']) ? $request_data['context'] : '';
+			$location = '';
+			if($context == 'admin_init'){
+				$location = admin_url();
+			} elseif($context == 'template_redirect'){
+				$location = home_url();
+			}
+			$location = apply_filters('ldc_restrict_email_address_location', $location, $context);
+			if($location){
+				wp_safe_redirect($location);
+				exit;
+			}
+		}
+	}
+	$die = '<p>' . __('Email address verified.') . '</p>';
+	wp_die($die, __('Verify your email address'));
+}
+
+function _ldc_restrict_email_address_user_request_action_description($description, $action_name){
+	if($action_name === 'verify-email-address'){
+		$description = __('Verify your email address');
+	}
+	return $description;
+}
+
+function _ldc_restrict_email_address_message($display_name, $user_email){
+	$html = '<h2>' . str_replace(',', '', sprintf(__('Howdy, %s'), $display_name)) . ',</h2>';
+	$html .= '<p>' . sprintf(__('Check your inbox at %s and click the link given.'), '<strong>' . $user_email . '</strong>') . '</p>';
+	$html .= '<h2>' . __('Still waiting for your email?') . '</h2>';
+	$html .= '<p>';
+	$html .= __('If you haven&#8217;t received your email yet, there are a number of things you can do:');
+	$html .= '<ul id="noemail-tips">';
+	$html .= '<li><p><strong>' . __('Wait a little longer. Sometimes delivery of email can be delayed by processes outside of our control.') . '</strong></p></li>';
+	$html .= '<li><p>' . __('Check the junk or spam folder of your email client. Sometime emails wind up there by mistake.') . '</p></li>';
+	$html .= '<li>' . sprintf(__('Have you entered your email correctly? You have entered %s, if it&#8217;s incorrect, you will not receive your email.'), $user_email) . '</li>';
+	$html .= '</ul>';
+	$html .= '</p>';
+	$html = apply_filters('ldc_restrict_email_address_message', $html, $display_name, $user_email);
+	return $html;
+}
