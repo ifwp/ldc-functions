@@ -544,10 +544,17 @@ function _ldc_restrict_email_address_message_helper($context = ''){
 					'context' => $context,
 				));
 				if($request_id and !is_wp_error($request_id)){
-					wp_send_user_request($request_id);
+					$r = wp_send_user_request($request_id);
+          if($r and !is_wp_error($r)){
+            update_user_meta($user->ID, 'ldc_restrict_email_address_error', 0);
+          } else {
+            update_user_meta($user->ID, 'ldc_restrict_email_address_error', 1);
+          }
 				}
-				$die = _ldc_restrict_email_address_message($user->display_name, $user->user_email);
-				wp_die($die, __('Verify your email address'));
+        if(!get_user_meta($user->ID, 'ldc_restrict_email_address_error', true)){
+          $die = _ldc_restrict_email_address_message($user->display_name, $user->user_email);
+  				wp_die($die, __('Verify your email address'));
+        }
 			}
 		}
 	}
