@@ -10,7 +10,7 @@
  * Plugin Name: LDC Functions
  * Plugin URI: https://luisdelcid.com
  * Text Domain: ldc-functions
- * Version: 2019.11.12.1
+ * Version: 2019.11.22
  *
  */ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -31,7 +31,7 @@
 			deactivate_plugins(plugin_basename(__FILE__));
 		} else {
             define('LDC_Functions', __FILE__);
-			define('LDC_Functions_Version', '2019.11.12.1');
+			define('LDC_Functions_Version', '2019.11.22');
             require_once(plugin_dir_path(LDC_Functions) . 'functions.php');
         }
 	});

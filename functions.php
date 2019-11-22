@@ -286,7 +286,11 @@
 	if(!function_exists('ldc_response')){
 		function ldc_response($data = '', $message = '', $success = false){
 			if(!$message){
-				$message = 'Unknown';
+                if($success){
+                    $message = 'ok';
+                } else {
+                    $message = 'unknown error';
+                }
 			}
 			return array(
 				'data' => $data,
